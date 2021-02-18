@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -48,6 +47,7 @@ namespace CryptoMarketBot
                     try
                     {
                         var sym = message.Text.Split(' ', '-', ':').LastOrDefault();
+                        if (sym.Contains("/") || sym.Contains("\\")) return;
                         BotClient.SendTextMessageAsync(message.Chat.Id,
                             JObject.Parse(GetQuotes(sym, "USD")).ToString());
                         BotClient.DeleteMessageAsync(message.Chat.Id, waitMessage.MessageId);
