@@ -120,8 +120,8 @@ namespace CryptoMarketBot
                                            $"?symbol={symbol}&convert={convert}");
 
         static string GetCnNumber(this JToken token) =>
-            ChineseNumber.GetString(token.ToObject<long>() > 100000000
-                ? token.ToObject<long>() / 100000000 * 100000000
+            ChineseNumber.GetString(token.ToObject<long>() > 10000000
+                ? token.ToObject<long>() / 10000000 * 10000000
                 : token.ToObject<long>() > 1000000
                     ? token.ToObject<long>() / 1000000 * 1000000
                     : token.ToObject<long>() / 10000 * 10000).TrimEnd('零');
