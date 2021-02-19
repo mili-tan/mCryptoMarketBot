@@ -18,8 +18,7 @@ namespace CryptoMarketBot
 
         static void Main(string[] args)
         {
-            Console.WriteLine(ChineseNumber.GetString(21000000).TrimEnd('零'));
-            Console.WriteLine("CryptoMarket Bot");
+            Console.WriteLine("mCryptoMarket Bot");
             string tokenStr;
             if (File.Exists(SetupBasePath + "token.text"))
                 tokenStr = File.ReadAllText(SetupBasePath + "token.text");
@@ -68,35 +67,29 @@ namespace CryptoMarketBot
 
                         text += Environment.NewLine;
                         text += $"当前价格：${priceStr} USD" + Environment.NewLine;
-                        Console.WriteLine(date["max_supply"].Count());
                         text += "-----流通量-----" + Environment.NewLine;
                         try
                         {
-                            text += $"最大供应量：{GetCnNumber(date["max_supply"])}" + Environment.NewLine;
+                            text += $"供应总量：{GetCnNumber(date["max_supply"])}" + Environment.NewLine;
                         }
                         catch (Exception)
                         {
                             // ignored
                         }
                         if (date["total_supply"].GetCnNumber() != date["circulating_supply"].GetCnNumber())
-                            text += $"当前总量：{date["total_supply"].GetCnNumber()}" + Environment.NewLine;
+                            text += $"发行总量：{date["total_supply"].GetCnNumber()}" + Environment.NewLine;
                         text += $"流通总量：{date["circulating_supply"].GetCnNumber()}" + Environment.NewLine;
 
                         text += "-----成交量-----" + Environment.NewLine;
                         text += $"当前市值：{quote["market_cap"].GetCnNumber()} 美金" + Environment.NewLine;
-                        text += $"24H 成交额：{quote["volume_24h"].GetCnNumber()} 美金" + Environment.NewLine;
+                        text += $"日成交额：{quote["volume_24h"].GetCnNumber()} 美金" + Environment.NewLine;
 
                         text += "-----涨跌幅-----" + Environment.NewLine;
-                        text += $"1时：{quote["percent_change_1h"].GetNumber()}%" +
-                                Environment.NewLine;
-                        text += $"24时：{quote["percent_change_24h"].GetNumber()}%" +
-                                Environment.NewLine;
-                        text += $"7日：{quote["percent_change_7d"].GetNumber()}%" +
-                                Environment.NewLine;
-                        text += $"30日：{quote["percent_change_30d"].GetNumber()}%" +
-                                Environment.NewLine;
-                        text += $"更新时间：{quote["last_updated"].ToObject<DateTime>()}" +
-                                Environment.NewLine;
+                        text += $"1时：{quote["percent_change_1h"].GetEmojiNumber()}%" + Environment.NewLine;
+                        text += $"1日：{quote["percent_change_24h"].GetEmojiNumber()}%" + Environment.NewLine;
+                        text += $"1周：{quote["percent_change_7d"].GetEmojiNumber()}%" + Environment.NewLine;
+                        text += $"1月：{quote["percent_change_30d"].GetEmojiNumber()}%" + Environment.NewLine;
+                        text += $"更新时间：{quote["last_updated"].ToObject<DateTime>()}" + Environment.NewLine;
 
                         BotClient.SendTextMessageAsync(message.Chat.Id,text);
                         BotClient.DeleteMessageAsync(message.Chat.Id, waitMessage.MessageId);
@@ -133,7 +126,11 @@ namespace CryptoMarketBot
                     ? token.ToObject<long>() / 1000000 * 1000000
                     : token.ToObject<long>() / 10000 * 10000).TrimEnd('零');
 
-        static string GetNumber(this JToken token) => token.ToObject<double>().ToString("+#0.00;-#0.00;0");
+        static string GetEmojiNumber(this JToken token)
+        {
+            var num = token.ToObject<double>().ToString("+#0.00;-#0.00;0");
+            return $" {(num.StartsWith("+") ? "📈" : "📉")} {num}";
+        }
     }
 }
 
