@@ -5,7 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Chinese;
 using Newtonsoft.Json.Linq;
-using NStandard;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -67,7 +66,6 @@ namespace CryptoMarketBot
                             // ignored
                         }
 
-                        ;
                         text += Environment.NewLine;
                         text += $"当前价格：${priceStr} USD" + Environment.NewLine;
                         Console.WriteLine(date["max_supply"].Count());
