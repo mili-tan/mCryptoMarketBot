@@ -14,7 +14,7 @@ namespace CryptoMarketBot
     {
         private static TelegramBotClient BotClient;
         private static string SetupBasePath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-        private static readonly WebProxy MWebProxy = new WebProxy("127.0.0.1", 7890);
+        //private static readonly WebProxy MWebProxy = new WebProxy("127.0.0.1", 7890);
 
         static void Main(string[] args)
         {
@@ -23,14 +23,14 @@ namespace CryptoMarketBot
             if (File.Exists(SetupBasePath + "token.text"))
                 tokenStr = File.ReadAllText(SetupBasePath + "token.text");
             else if (!string.IsNullOrWhiteSpace(string.Join("", args)))
-                tokenStr = string.Join("http_proxy", MWebProxy.Address.DnsSafeHost);
+                tokenStr = args.FirstOrDefault();
             else
             {
                 Console.WriteLine("Token:");
                 tokenStr = Console.ReadLine();
             }
 
-            BotClient = new TelegramBotClient(tokenStr, MWebProxy);
+            BotClient = new TelegramBotClient(tokenStr);
 
             Console.Title = "Bot:@" + BotClient.GetMeAsync().Result.Username;
             Console.WriteLine($"@{BotClient.GetMeAsync().Result.Username} : Connected");
