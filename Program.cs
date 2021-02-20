@@ -70,15 +70,15 @@ namespace CryptoMarketBot
                         text += "-----流通量-----" + Environment.NewLine;
                         try
                         {
-                            text += $"供应总量：{GetCnNumber(date["max_supply"])}" + Environment.NewLine;
+                            text += $"供应总量：{GetCnNumberSupply(date["max_supply"])}" + Environment.NewLine;
                         }
                         catch (Exception)
                         {
                             // ignored
                         }
-                        if (date["total_supply"].GetCnNumber() != date["circulating_supply"].GetCnNumber())
-                            text += $"发行总量：{date["total_supply"].GetCnNumber()}" + Environment.NewLine;
-                        text += $"流通总量：{date["circulating_supply"].GetCnNumber()}" + Environment.NewLine;
+                        if (date["total_supply"].ToObject<long>() != date["circulating_supply"].ToObject<long>())
+                            text += $"发行总量：{date["total_supply"].GetCnNumberSupply()}" + Environment.NewLine;
+                        text += $"流通总量：{date["circulating_supply"].GetCnNumberSupply()}" + Environment.NewLine;
 
                         text += "-----成交量-----" + Environment.NewLine;
                         text += $"当前市值：{quote["market_cap"].GetCnNumber()} 美金" + Environment.NewLine;
@@ -126,10 +126,15 @@ namespace CryptoMarketBot
                     ? token.ToObject<long>() / 1000000 * 1000000
                     : token.ToObject<long>() / 10000 * 10000).TrimEnd('零');
 
+        static string GetCnNumberSupply(this JToken token) =>
+            ChineseNumber.GetString(token.ToObject<long>() > 1000000
+                    ? token.ToObject<long>() / 1000000 * 1000000
+                    : token.ToObject<long>() / 10000 * 10000).TrimEnd('零');
+
         static string GetEmojiNumber(this JToken token)
         {
             var num = token.ToObject<double>().ToString("+#0.00;-#0.00;0");
-            return $" {(num.StartsWith("+") ? "📈" : "📉")} {num}";
+            return $"{(num.StartsWith("+") ? "📈" : "📉")} {num}";
         }
     }
 }
